@@ -1,4 +1,4 @@
-package me.arrowsome.euler57;
+package me.arrowsome.euler54;
 
 import java.io.Closeable;
 import java.io.IOException;

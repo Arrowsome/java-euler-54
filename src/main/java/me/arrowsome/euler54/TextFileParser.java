@@ -1,4 +1,4 @@
-package me.arrowsome.euler57;
+package me.arrowsome.euler54;
 
 import java.io.BufferedReader;
 import java.io.IOException;
