@@ -2,6 +2,7 @@ package me.arrowsome.euler54;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Ranking implements Comparable<Ranking> {
     private final Rank rank;
@@ -24,5 +25,18 @@ public class Ranking implements Comparable<Ranking> {
         }
 
         return rankCompare;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ranking ranking = (Ranking) o;
+        return rank == ranking.rank && highValues.equals(ranking.highValues);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rank, highValues);
     }
 }

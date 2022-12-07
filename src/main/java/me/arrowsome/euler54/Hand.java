@@ -13,7 +13,7 @@ public class Hand implements Comparable<Hand> {
         this.ranking = calcRanking();
     }
 
-    private Ranking calcRanking() {
+    protected Ranking calcRanking() {
         boolean isStraight = isStraight();
         boolean isFlush = isFlush();
         boolean isStraightFlush = isStraight && isFlush;
@@ -93,7 +93,10 @@ public class Hand implements Comparable<Hand> {
         if (firstPair != null && secondPair != null) {
             return new Ranking(
                     Rank.TWO_PAIRS,
-                    getDescValuesWithPriority(firstPair, secondPair)
+                    getDescValuesWithPriority(
+                            firstPair.ordinal() > secondPair.ordinal() ? firstPair : secondPair,
+                            firstPair.ordinal() > secondPair.ordinal() ? secondPair : firstPair
+                    )
             );
         }
 
@@ -106,11 +109,11 @@ public class Hand implements Comparable<Hand> {
 
         return new Ranking(
                 Rank.HIGH_CARD,
-                getDescValuesWithPriority()
+                getDescValues()
         );
     }
 
-    private boolean isFlush() {
+    protected boolean isFlush() {
         Suit suit = cards.get(0).getSuit();
         for (int i = 1; i < cards.size(); ++i) {
             if (cards.get(i).getSuit() != suit) {
@@ -120,18 +123,18 @@ public class Hand implements Comparable<Hand> {
         return true;
     }
 
-    private boolean isStraight() {
+    protected boolean isStraight() {
         int min = cards.get(0).getValue().ordinal();
         int max = cards.get(cards.size() - 1).getValue().ordinal();
 
         return (max - min) == 4;
     }
 
-    private Value getMaxValue() {
+    protected Value getMaxValue() {
         return cards.get(cards.size() - 1).getValue();
     }
 
-    private Map<Value, Integer> calcFrequency() {
+    protected Map<Value, Integer> calcFrequency() {
         Map<Value, Integer> freq = new HashMap<>();
         for (Card card : cards) {
             Value value = card.getValue();
@@ -143,7 +146,7 @@ public class Hand implements Comparable<Hand> {
         return freq;
     }
 
-    private List<Value> getDescValues() {
+    protected List<Value> getDescValues() {
         List<Value> values = new ArrayList<>();
         for (Card card : cards) {
             values.add(card.getValue());
@@ -152,7 +155,7 @@ public class Hand implements Comparable<Hand> {
         return values;
     }
 
-    private List<Value> getDescValuesWithPriority(Value... values) {
+    protected List<Value> getDescValuesWithPriority(Value... values) {
         List<Value> descValuesWithPriority = getDescValues();
         for (Value value : values) {
             while (descValuesWithPriority.contains(value)) {
@@ -168,5 +171,18 @@ public class Hand implements Comparable<Hand> {
     @Override
     public int compareTo(Hand o) {
         return ranking.compareTo(o.ranking);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Hand hand = (Hand) o;
+        return cards.equals(hand.cards) && ranking.equals(hand.ranking);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cards, ranking);
     }
 }
